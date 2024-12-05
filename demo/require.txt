@@ -1,0 +1,4 @@
+Flask
+Agently
+graphviz
+Pillow

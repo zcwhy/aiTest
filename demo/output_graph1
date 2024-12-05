@@ -1,0 +1,71 @@
+// 流程图
+digraph {
+	graph [dpi=300 fontname=SimSun]
+	node [fillcolor="#E1F5FE" fontcolor=black fontname=SimSun shape=rectangle style=filled]
+	edge [color="#2196F3" fontcolor=black fontname=SimSun]
+	A [label="文件展示"]
+	B [label="搜索"]
+	C [label="文件分类"]
+	D [label="移动"]
+	E [label="删除"]
+	F [label="更多"]
+	B1 [label="按类型查找"]
+	B2 [label="按来源查找"]
+	B3 [label="按关键字查找"]
+	B4 [label="AI搜索"]
+	C1 [label="文档"]
+	C2 [label="图片"]
+	C3 [label="视频"]
+	C4 [label="音乐"]
+	C5 [label="压缩包"]
+	C6 [label="安装包"]
+	C7 [label="传输与下载"]
+	C8 [label="收藏"]
+	C9 [label="截屏"]
+	C10 [label="相机"]
+	C11 [label="录音机"]
+	D1 [label="选中文件"]
+	D2 [label="选择目录"]
+	E1 [label="删除文件"]
+	E2 [label="删除文件夹"]
+	E3 [label="删除系统文件"]
+	E4 [label="删除OTG文件"]
+	F1 [label="复制"]
+	F2 [label="设为私密"]
+	F3 [label="收藏"]
+	F4 [label="重命名"]
+	F5 [label="压缩"]
+	F6 [label="详情"]
+	A -> B
+	A -> C
+	A -> D
+	A -> E
+	A -> F
+	B -> B1
+	B -> B2
+	B -> B3
+	B -> B4
+	C -> C1
+	C -> C2
+	C -> C3
+	C -> C4
+	C -> C5
+	C -> C6
+	C -> C7
+	C -> C8
+	C -> C9
+	C -> C10
+	C -> C11
+	D -> D1
+	D -> D2
+	E -> E1
+	E -> E2
+	E -> E3
+	E -> E4
+	F -> F1
+	F -> F2
+	F -> F3
+	F -> F4
+	F -> F5
+	F -> F6
+}

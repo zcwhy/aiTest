@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用例生成系统</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        h2 {
+            text-align: center;
+            padding-top: 20px;
+        }
+
+        h3 {
+            background-color: #f9f9f9;
+            padding: 20px;
+        }
+
+
+        form {
+            padding: 20px;
+            border-radius: 5px;
+            width: 500px;
+            text-align: center;
+            margin: 0 auto;
+        }
+
+        input[type="file"] {
+            margin-bottom: 10px;
+        }
+
+        input[type="submit"] {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+
+        #error-message {
+            color: red;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        /* Simple modal styling */
+        #modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 30px;
+        }
+        #modal-content {
+            background-color: rgba(255, 255, 255, 0.6);
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 20%;
+            border-radius: 10px;
+        }
+
+        #modal-message {
+            text-align: center;
+        }
+
+        #close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        #close:hover,
+        #close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        #divButton {
+            margin: 0 auto;
+        }
+        #button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-top: 30px;
+        }
+        #button[type="button"]:hover {
+            background-color: #0056b3;
+        }
+
+        #test-cases-container {
+            background-color: #C0C0C0;
+            width: 600px; /* 设置展示框宽度，可根据需求调整 */
+            height: 300px; /* 设置展示框高度，可根据需求调整 */
+            border: 1px solid #ccc; /* 添加边框样式 */
+            padding: 10px; /* 内边距，让内容距离边框有一定间隔 */
+            margin: 0 auto;
+            overflow-y: auto; /* 当内容超出展示框高度时，显示垂直滚动条以实现滑动查看 */
+        }
+
+
+
+    </style>
+</head>
+<body>
+    <h1>用例生成系统</h1>
+
+    <div id="test-cases-container">
+    </div>
+
+    <h2>请上传需求文档</h2>
+    {% if error %}
+    <p id="error-message">{{ error }}</p>
+    {% endif %}
+    <form method="post" enctype="multipart/form-data">
+        <input type="file" name="file" />
+        <input type="submit" value="上传" />
+        <div id="divButton"> <!-- 新增一个div包裹生成用例按钮 -->
+            <button id="button" type="button" onclick="runPythonClass()">生成用例</button>
+        </div>
+    </form>
+
+
+    <!-- Modal -->
+    <div id="modal">
+        <div id="modal-content">
+            <span id="close">&times;</span>
+            <p id="modal-message"></p>
+        </div>
+    </div>
+
+    <script>
+        function runPythonClass() {
+            // 使用fetch发送POST请求到后端执行工作流并获取测试用例数据
+            fetch('/run_workflow', {
+                method: 'POST',
+            })
+          .then(response => response.json())
+          .then(data => {
+                    // 调用函数展示测试用例数据到前端，这里假设你有一个展示数据的函数showTestCases，需要进一步实现其功能
+                    showTestCases(data);
+                })
+          .catch(e => {
+                console.log("Error:", e);
+                alert("获取测试用例数据时出现错误，请稍后重试！");
+            });
+        }
+
+        function showTestCases(testCases) {
+            const container = document.getElementById('test-cases-container');
+            container.innerHTML = ''; // 先清空展示框内容
+            console.log('testCases的值：', testCases);
+            console.log('testCases的类型：', typeof testCases);
+            testCases.forEach(testCaseText => {
+                const lines = testCaseText.split('\n');
+                let caseNumber = '', title = '', module = '', priority = '', preconditions = [], steps = [], expectedResults = [];
+
+                lines.forEach(line => {
+                    line = line.trim();
+                    if (line.startsWith(' 测试用例编号：')) {
+                        caseNumber = line.replace(' 测试用例编号：', '').trim();
+                        console.log('测试用例编号：', caseNumber);
+                    } else if (line.startsWith('**用例标题**：')) {
+                        title = line.replace('**用例标题**：', '').trim();
+                        console.log('用例标题：', title);
+                    } else if (line.startsWith('**模块**：')) {
+                        module = line.replace('**模块**：', '').trim();
+                        console.log('模块：', module);
+                    } else if (line.startsWith('**优先级**：')) {
+                        priority = line.replace('**优先级**：', '').trim();
+                        console.log('优先级：', priority);
+                    } else if (line.startsWith('**条件**：')) {
+                        preconditions.push(line.replace('**条件**：', '').trim());
+                    } else if (line.startsWith('**步骤**：')) {
+                        const stepLines = line.replace('**步骤**：', '').trim().split('. ').slice(1);
+                        steps = stepLines.map(step => `<li>${step}</li>`).join('');
+                    } else if (line.startsWith('**预期结果**：')) {
+                        const resultLines = line.replace('**预期结果**：', '').trim().split('. ').slice(1);
+                        expectedResults = resultLines.map(result => `<li>${result}</li>`).join('');
+                    }
+                });
+
+                const div = document.createElement('div');
+                div.className = 'test-case-item';
+                div.innerHTML = `
+                    <h3>测试用例编号：${caseNumber}</h3>
+                    <p><strong>用例标题</strong>：${title}</p>
+                    <p><strong>模块</strong>：${module}</p>
+                    <p><strong>优先级</strong>：${priority}</p>
+                    <h4>预置条件</h4>
+                    <ul>
+                        ${preconditions.map(condition => `<li>${condition}</li>`).join('')}
+                    </ul>
+                    <h4>测试步骤</h4>
+                    <ol>
+                        ${steps}
+                    </ol>
+                    <h4>预期结果</h4>
+                    <ol>
+                        ${expectedResults}
+                    </ol>
+                    <hr>`;
+                container.appendChild(div);
+            });
+        }
+        var modal = document.getElementById("modal");
+        var modalMessage = document.getElementById("modal-message");
+        var span = document.getElementById("close");
+        window.onload = function() {
+            {% for category, message in get_flashed_messages(with_categories=true) %}
+                if ('{{ category }}' === 'success') {
+                    modal.style.display = "block";
+                    modalMessage.textContent = '{{ message }}';
+<!--                    window.alert("上传文件成功");-->
+                }else if ('{{ category }}' === 'error') {
+                    modal.style.display = "block";
+                    modalMessage.textContent = '{{ message }}';
+                }
+            {% endfor %}
+        };
+        span.onclick = function() {
+            modal.style.display = "none";
+        }
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>
