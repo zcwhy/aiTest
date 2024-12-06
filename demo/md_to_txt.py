@@ -1,5 +1,4 @@
 def process_document(document_path):
-    print(document_path)
     with open(document_path, "r", encoding="utf-8") as file:
         document_content = file.read()
 

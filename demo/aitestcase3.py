@@ -1,3 +1,4 @@
+import os
 import Agently
 import json
 from ENV import deep_seek_url, deep_seek_api_key, deep_seek_default_model
@@ -125,10 +126,11 @@ class WorkflowManager:
 
         test_case_content = result["default"]["result"]
         test_cases = {}
+        # print("there is test_cases:", test_case_content)
         test_cases = get_case_list(test_case_content)
         print("结果1：")
         print(test_cases)
-        return test_cases
+        return json.dumps(test_cases, indent=4, ensure_ascii=False)
 
 
 if __name__ == "__main__":

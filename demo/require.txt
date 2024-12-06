@@ -2,3 +2,4 @@ Flask
 Agently
 graphviz
 Pillow
+matplotlib
