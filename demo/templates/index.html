@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.2.3/dist/mermaid.min.js"></script>
     <meta charset="UTF-8">
     <title>用例生成系统</title>
     <style>
@@ -129,6 +130,11 @@
 
     <div id="test-cases-container">
     </div>
+
+    <span class='mermaid'>
+        graph LR
+        Box1["Hi"] --> BoxHaha["Haha"]
+    </span>
 
     <h2>请上传需求文档</h2>
     {% if error %}

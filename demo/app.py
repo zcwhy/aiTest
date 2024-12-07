@@ -3,6 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, send_from_
 import os
 import json
 from aitestcase3 import WorkflowManager
+from use_llm import llm_process
 UPLOAD_FOLDER = '../data'
 ALLOWED_EXTENSIONS = {'md'}
 
@@ -50,17 +51,7 @@ def upload_file():
 
 @app.route('/run_workflow', methods=['POST'])
 def run_workflow():
-    manager = WorkflowManager()
-    guiding_strategy_path = "../data/编写用例要点.txt"
-    case_template_path = "../data/标准用例格式.txt"
-    manager.load_strategy_and_template(guiding_strategy_path, case_template_path)
-    document_path = "../data/document.md"
-    manager.set_requirement_document(document_path)
-    test_cases = {}
-    test_cases = manager.run_workflow()
-    print("结果2:")
-    print(test_cases)
-    return test_cases
+    return llm_process()
 
 
 
